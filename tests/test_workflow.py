@@ -21,65 +21,65 @@ class TestApproveRequest(unittest.TestCase):
             "status": "requested",
             "approved_by": None,
         }
-        workflow.FAKE_RECORDS["A001"] = self.record
+        self.cards = {"A001": self.record}
         
     # ---- CASE 2 / checkpoint B2 ------------------------------------------
     def test_issue_before_approval_is_rejected_and_record_unchanged(self):
         snapshot = copy.deepcopy(self.record)
         with self.assertRaises(ValueError):
-            issue_card("A001")
+            issue_card(self.cards, "A001")
         self.assertEqual(self.record, snapshot)
 
     # ---- CASE 3 / checkpoint B3 ------------------------------------------
     def test_blank_approver_is_rejected_and_record_unchanged(self):
         snapshot = copy.deepcopy(self.record)
         with self.assertRaises(ValueError):
-            approve_request("A001", None)
+            approve_request(self.cards, "A001", None)
         self.assertEqual(self.record, snapshot)
 
         with self.assertRaises(ValueError):
-            approve_request("A001", "   ")
+            approve_request(self.cards, "A001", "   ")
         self.assertEqual(self.record, snapshot)
 
         with self.assertRaises(ValueError):
-            approve_request("A001", "")
+            approve_request(self.cards, "A001", "")
         self.assertEqual(self.record, snapshot)
 
     # ---- CASE 4 / checkpoint B4 ------------------------------------------
     def test_full_workflow_requested_to_returned(self):
-        approve_request("A001", "M01")
+        approve_request(self.cards, "A001", "M01")
         self.assertEqual(self.record["status"], "approved")
         self.assertEqual(self.record["approved_by"], "M01")
 
-        issue_card("A001")
+        issue_card(self.cards, "A001")
         self.assertEqual(self.record["status"], "issued")
 
-        return_card("A001")
+        return_card(self.cards, "A001")
         self.assertEqual(self.record["status"], "returned")
 
     # ---- CASE 5 / checkpoint B5 ------------------------------------------
     def test_double_return_is_rejected(self):
-        approve_request("A001", "M01")
-        issue_card("A001")
-        return_card("A001")
+        approve_request(self.cards, "A001", "M01")
+        issue_card(self.cards, "A001")
+        return_card(self.cards, "A001")
         with self.assertRaises(ValueError):
-            return_card("A001")
+            return_card(self.cards, "A001")
         self.assertEqual(self.record["status"], "returned")
 
 
     def test_issue_after_return_is_rejected(self):
-        approve_request("A001", "M01")
-        issue_card("A001")
-        return_card("A001")
+        approve_request(self.cards, "A001", "M01")
+        issue_card(self.cards, "A001")
+        return_card(self.cards, "A001")
         with self.assertRaises(ValueError):
-            issue_card("A001")
+            issue_card(self.cards, "A001")
         self.assertEqual(self.record["status"], "returned")
 
 
     def test_approve_twice_is_rejected(self):
-        approve_request("A001", "M01")
+        approve_request(self.cards, "A001", "M01")
         with self.assertRaises(ValueError):
-            approve_request("A001", "M02")
+            approve_request(self.cards, "A001", "M02")
         self.assertEqual(self.record["approved_by"], "M01")
 
 

@@ -3,17 +3,13 @@
 # def return_card():, is legal only if the records current status is issued for that operation.
 # requested → approved → issued → returned
 
-FAKE_RECORDS = {
-    "A001": {"id": "A001", "fellow_id": "F001", "card_type": "visitor", "status": "requested", "approved_by": None},
-}
-
-def get_record(request_id):
-    if request_id not in FAKE_RECORDS:
+def get_record(cards, request_id):
+    if request_id not in cards:
         raise ValueError(f"Unknown record ID: {request_id}")
-    return FAKE_RECORDS[request_id]
+    return cards[request_id]
 
-def approve_request(request_id, approved_by): 
-    record = get_record(request_id)
+def approve_request(cards, request_id, approved_by): 
+    record = get_record(cards, request_id)
 
     if record["status"] != "requested": 
         raise ValueError(f"Cannot approve: status must be 'requested', but it is '{record['status']}'.") 
@@ -23,8 +19,8 @@ def approve_request(request_id, approved_by):
     record["status"] = "approved"
     record["approved_by"] = approved_by.strip()
 
-def issue_card(request_id):
-    record = get_record(request_id)
+def issue_card(cards, request_id):
+    record = get_record(cards, request_id)
 
     if record["status"] != "approved":
         raise ValueError(f"Cannot Issue: status must be 'approved', but it is '{record['status']}'.") 
@@ -33,8 +29,8 @@ def issue_card(request_id):
     
     record["status"] = "issued"
 
-def return_card(request_id):
-    record = get_record(request_id)
+def return_card(cards, request_id):
+    record = get_record(cards, request_id)
 
     if record["status"] != "issued":
         raise ValueError(f"Cannot return: status must be 'issued', but it is '{record['status']}'.")
