@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from campusaccess import main as menu
+import main as menu
 
 ID = "A001"
 FELLOW_ID = "F001"
