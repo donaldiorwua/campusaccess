@@ -2,7 +2,9 @@ import copy
 import unittest
 import campusaccess
 
-from campusaccess import (
+from campusaccess import approve-request
+
+from campusaccess.approve-request import (
     approve_request,
     issue_card,
     return_card,
@@ -19,7 +21,7 @@ class TestApproveRequest(unittest.TestCase):
             "status": "requested",
             "approved_by": None,
         }
-        campusaccess.FAKE_RECORDS["A001"] = self.record
+        approve-request.FAKE_RECORDS["A001"] = self.record
         
     # ---- CASE 2 / checkpoint B2 ------------------------------------------
     def test_issue_before_approval_is_rejected_and_record_unchanged(self):
