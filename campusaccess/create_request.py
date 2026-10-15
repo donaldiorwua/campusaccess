@@ -1,17 +1,39 @@
 import datetime
+import re
 
 
 def validate_fellow_id(fellow_id):
+    if not isinstance(fellow_id, str):
+        raise TypeError("fellow_id must be a string.")
+
     cleaned_id = fellow_id.strip()
-    if cleaned_id == "":
-        raise ValueError("fellow id cannot be blank.")
+
+    if not cleaned_id:
+        raise ValueError("fellow_id cannot be blank.")
+
+    if not re.fullmatch(r"FE-\d{3}", cleaned_id):
+        raise ValueError(
+            "fellow_id must follow the format FE-001."
+        )
+
     return cleaned_id
 
 def validate_card_type(card_type):
+    if not isinstance(card_type, str):
+        raise TypeError("card_type must be a string.")
+
     cleaned_card_type = card_type.strip().title()
-    card_type = ["Fellow", "Staff", "Visitor", "Other"]
-    if cleaned_card_type not in card_type:
-        raise ValueError("Invalid card_type. Must be Fellow, Staff, Visitor, or Other.")
+
+    if not cleaned_card_type:
+        raise ValueError("card_type cannot be blank.")
+
+    valid_card_types = {"Fellow", "Staff", "Visitor", "Other"}
+
+    if cleaned_card_type not in valid_card_types:
+        raise ValueError(
+            "Invalid card_type. Must be Fellow, Staff, Visitor, or Other."
+        )
+
     return cleaned_card_type
 
 def validate_request_status(raw_request):
